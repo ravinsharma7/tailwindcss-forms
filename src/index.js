@@ -6,9 +6,9 @@ const [baseFontSize, { lineHeight: baseLineHeight }] = defaultTheme.fontSize.bas
 const { spacing, borderWidth, borderRadius } = defaultTheme
 
 const forms = plugin.withOptions(function (options = { strategy: undefined }) {
-  return function ({ addBase, addComponents, theme }) {
+  return function ({ addBase, addComponents, theme, config }) {
     const strategy = options.strategy === undefined ? ['base', 'class'] : [options.strategy]
-
+    const important = config("important")
     const rules = [
       {
         base: [
@@ -289,6 +289,10 @@ const forms = plugin.withOptions(function (options = { strategy: undefined }) {
       .map((rule) => {
         if (rule[strategy] === null) return null
 
+        if(important) {
+          _e_important = important.trim()
+          rule[strategy] = rule[strategy].map(className => `${_e_important} ${className}`)
+        }
         return { [rule[strategy]]: rule.styles }
       })
       .filter(Boolean)
